@@ -27,17 +27,20 @@ def main():
 	while game_run == 1:
 		#use fps_limit to keep refresh at 60 fps
 		fps_limit.tick(60)
-		dt = (fps_limit.get_time()/1000) #calculate delta time
 		#for loop to close game when "x" is pressed
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return
-		#draw screen
+		#draw background screen
 		screen.fill(screen_color)
+		#update player movement before drawing
+		player.update(dt)
 		#draw player token each frame
 		player.draw(screen)
 		#refresh frame - always have at the end
 		pygame.display.flip()
+
+		dt = (fps_limit.tick(60)/1000) #calculate delta time
 		
 
 		
