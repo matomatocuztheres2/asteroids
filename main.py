@@ -17,6 +17,9 @@ def main():
 	screen_color = (0,0,0)
 	game_run = 1
 	while game_run == 1:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				return
 		screen.fill(screen_color)
 		pygame.display.flip()
 
