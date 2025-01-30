@@ -1,8 +1,12 @@
+import sys
 #import pygame
 import pygame
 #import constants from contants file.
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from shot import Shoot
 
 
 def main():
@@ -13,15 +17,27 @@ def main():
 	fps_limit = pygame.time.Clock()
 	dt = 0 #delta time
 
-	#print width and height
+	#create groups
+	updatable = pygame.sprite.Group()
+	drawable = pygame.sprite.Group()
+	asteroids = pygame.sprite.Group()
+	shots = pygame.sprite.Group()
+
+	Player.containers = (updatable, drawable)
+	Asteroid.containers = (asteroids, updatable, drawable)
+	AsteroidField.containers = (updatable)
+	Shoot.containers = (shots, updatable, drawable)
+	#create asteroid field to spawn asteroids
+	asteroidfield = AsteroidField()
+
+	#print starting message
 	print("Starting asteroids!")
-	print(f"Screen width: {SCREEN_WIDTH}")
-	print(f"Screen height: {SCREEN_HEIGHT}")
 	#set screen surface variables
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	screen_color = (0,0,0) #set screen color using RGB
 	#create player token in middle of screen
 	player = Player((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2))
+	
 	#infinite loop to run game
 	game_run = 1
 	while game_run == 1:
@@ -31,12 +47,24 @@ def main():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return
+			
 		#draw background screen
 		screen.fill(screen_color)
+
 		#update player movement before drawing
-		player.update(dt)
+		updatable.update(dt)
+
+		if player.timer > 0:
+			player.timer -= dt
+
+		for asteroid in asteroids:
+			if asteroid.collision(player):
+				print("Game Over")
+				sys.exit()
 		#draw player token each frame
-		player.draw(screen)
+		for obj in drawable:
+			obj.draw(screen)
+
 		#refresh frame - always have at the end
 		pygame.display.flip()
 
