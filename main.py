@@ -57,10 +57,18 @@ def main():
 		if player.timer > 0:
 			player.timer -= dt
 
+		#check for collision with player
 		for asteroid in asteroids:
 			if asteroid.collision(player):
 				print("Game Over")
 				sys.exit()
+		
+			#check for collision with bullet
+			for shot in shots:
+				if asteroid.collision(shot):
+					shot.kill()
+					asteroid.split()
+
 		#draw player token each frame
 		for obj in drawable:
 			obj.draw(screen)
